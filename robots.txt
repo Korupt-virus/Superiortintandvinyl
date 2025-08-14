@@ -1,0 +1,24 @@
+# robots.txt for Superior Tint & Vinyl
+# https://superiortintandvinyl.com/robots.txt
+
+User-agent: *
+Allow: /
+
+# Preferred crawling schedule
+Crawl-delay: 1
+
+# Sitemap location
+Sitemap: https://superiortintandvinyl.com/sitemap.xml
+
+# Block access to admin/private areas (add as needed)
+# Disallow: /admin/
+# Disallow: /private/
+# Disallow: /temp/
+
+# Allow all search engines to access images
+User-agent: *
+Allow: /images/
+
+# Block bad bots (add as needed)
+# User-agent: BadBot
+# Disallow: /
