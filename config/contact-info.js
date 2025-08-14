@@ -8,11 +8,11 @@ const contactInfo = {
     businessName: "Superior Tint & Vinyl",
     
     // Phone Numbers
-    phone: "(555) 123-4567",
-    phoneDisplay: "(555) 123-4567",
+    phone: "(480)-538-9360",
+    phoneDisplay: "(480)-538-9360",
     
     // Email
-    email: "info@superiortintvinyl.com",
+    email: "sales@superiortintvinyl.com",
     
     // Address
     address: {
