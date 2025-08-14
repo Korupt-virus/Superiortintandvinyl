@@ -1,0 +1,135 @@
+/* ==========================================================================
+   PACKAGES SECTION
+   ========================================================================== */
+.packages {
+    padding: var(--section-padding) 0;
+    background: var(--black);
+}
+
+.packages-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
+}
+
+.package-card {
+    background: var(--subtle-accent);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-xl);
+    padding: var(--space-xl);
+    text-align: center;
+    position: relative;
+    transition: var(--transition);
+}
+
+.package-card.recommended {
+    border-color: #D4AF37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+    transform: scale(1.05);
+}
+
+.package-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--gold-gradient);
+    color: var(--black);
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: var(--font-weight-semibold);
+}
+
+.package-header {
+    margin-bottom: var(--space-xl);
+}
+
+.package-title {
+    font-size: 1.5rem;
+    margin-bottom: var(--space-md);
+    background: var(--gold-text);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.package-price {
+    font-size: 2rem;
+    font-weight: var(--font-weight-bold);
+    color: var(--white);
+}
+
+.package-features {
+    margin-bottom: var(--space-xl);
+    text-align: left;
+}
+
+.package-features li {
+    margin-bottom: var(--space-sm);
+    padding-left: var(--space-md);
+    position: relative;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.package-features li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    color: #D4AF37;
+    font-weight: var(--font-weight-bold);
+}
+
+.package-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.package-card.recommended:hover {
+    transform: scale(1.05) translateY(-5px);
+}
+
+/* Film Comparison Table */
+.film-comparison {
+    margin-top: var(--space-3xl);
+}
+
+.comparison-title {
+    text-align: center;
+    margin-bottom: var(--space-xl);
+    color: var(--white);
+}
+
+.comparison-table {
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    background: var(--subtle-accent);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.comparison-table th,
+.comparison-table td {
+    padding: var(--space-md);
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comparison-table th {
+    background: var(--black);
+    font-weight: var(--font-weight-semibold);
+    color: var(--white);
+}
+
+.comparison-table td {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.comparison-table tbody tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}

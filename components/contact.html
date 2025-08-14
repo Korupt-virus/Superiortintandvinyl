@@ -1,0 +1,97 @@
+<!-- Contact/Quote Section Component -->
+<section class="contact" id="contact">
+    <div class="container">
+        <h2 class="section-title">Get Your Free Quote</h2>
+        <div class="contact-grid">
+            <div class="contact-form-wrapper">
+                <form class="contact-form" action="[REPLACE WITH FORMSPREE OR HANDLER URL]" method="POST">
+                    <div class="form-group">
+                        <label for="name">Full Name*</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="phone">Phone Number*</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email*</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="year">Vehicle Year</label>
+                            <input type="text" id="year" name="year">
+                        </div>
+                        <div class="form-group">
+                            <label for="make">Make</label>
+                            <input type="text" id="make" name="make">
+                        </div>
+                        <div class="form-group">
+                            <label for="model">Model</label>
+                            <input type="text" id="model" name="model">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service">Service Type*</label>
+                        <select id="service" name="service" required>
+                            <option value="">Select a service</option>
+                            <option value="window-tint">Window Tinting</option>
+                            <option value="vinyl-wrap">Vinyl Wraps/Stripes</option>
+                            <option value="decals">Decals/Lettering</option>
+                            <option value="paint-protection">Paint Protection Film</option>
+                            <option value="multiple">Multiple Services</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Additional Details</label>
+                        <textarea id="message" name="message" rows="4" placeholder="Tell us about your project..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary form-submit">Get My Quote</button>
+                </form>
+            </div>
+            
+            <div class="contact-info">
+                <div class="contact-item">
+                    <h3>Call or Text</h3>
+                    <a href="tel:" class="contact-link phone-number"></a>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Email</h3>
+                    <a href="mailto:" class="contact-link email-address"></a>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Business Hours</h3>
+                    <div class="hours">
+                        <div class="hours-weekdays"></div>
+                        <div class="hours-saturday"></div>
+                        <div class="hours-sunday"></div>
+                    </div>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Service Areas</h3>
+                    <div class="service-area-text"></div>
+                </div>
+                
+                <div class="contact-item">
+                    <h3>Location</h3>
+                    <div class="map-placeholder">
+                        <img src="images/map-placeholder.jpg" alt="Superior Tint & Vinyl location map" loading="lazy">
+                        <div class="map-overlay">
+                            <span class="address-display">📍 </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

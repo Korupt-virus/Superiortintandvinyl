@@ -1,0 +1,35 @@
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B0B0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1A1A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8D6E27;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="800" height="600" fill="url(#bgGrad)"/>
+  
+  <!-- Car silhouette -->
+  <path d="M150 350 Q150 340 160 340 L320 340 Q340 340 350 320 L380 320 Q420 320 450 320 L550 320 Q570 340 580 340 L640 340 Q650 340 650 350 L650 400 Q650 410 640 410 L620 410 Q615 425 600 425 Q585 425 580 410 L220 410 Q215 425 200 425 Q185 425 180 410 L160 410 Q150 410 150 400 Z" fill="url(#goldGrad)" opacity="0.3"/>
+  
+  <!-- Wheels -->
+  <circle cx="200" cy="410" r="25" fill="#C9C9C9" opacity="0.5"/>
+  <circle cx="600" cy="410" r="25" fill="#C9C9C9" opacity="0.5"/>
+  
+  <!-- Text -->
+  <text x="400" y="280" font-family="Arial, sans-serif" font-size="32" font-weight="bold" text-anchor="middle" fill="url(#goldGrad)">Before & After</text>
+  <text x="400" y="320" font-family="Arial, sans-serif" font-size="24" text-anchor="middle" fill="#FFFFFF" opacity="0.8">Window Tinting - Sedan</text>
+  
+  <!-- Placeholder indicators -->
+  <rect x="50" y="50" width="300" height="200" fill="none" stroke="url(#goldGrad)" stroke-width="2" stroke-dasharray="10,5" opacity="0.6"/>
+  <text x="200" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF" opacity="0.6">BEFORE</text>
+  
+  <rect x="450" y="50" width="300" height="200" fill="none" stroke="url(#goldGrad)" stroke-width="2" stroke-dasharray="10,5" opacity="0.6"/>
+  <text x="600" y="160" font-family="Arial, sans-serif" font-size="16" text-anchor="middle" fill="#FFFFFF" opacity="0.6">AFTER</text>
+  
+  <!-- Bottom text -->
+  <text x="400" y="550" font-family="Arial, sans-serif" font-size="14" text-anchor="middle" fill="#FFFFFF" opacity="0.5">Gallery Image 1 - Replace with actual photo</text>
+</svg>

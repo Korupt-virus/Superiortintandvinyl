@@ -1,10 +1,85 @@
 /**
- * Superior Tint & Vinyl - JavaScript
+ * Superior Tint & Vinyl - Main JavaScript
  * Lightweight interactivity: mobile menu, FAQ accordion, gallery lightbox
- * No dependencies - vanilla JavaScript only
+ * Updated for modular component system
  */
 
+// Populate contact information from config
+function populateContactInfo() {
+    if (typeof contactInfo === 'undefined') {
+        console.warn('Contact info not loaded yet, retrying...');
+        setTimeout(populateContactInfo, 100);
+        return;
+    }
+    
+    // Phone numbers
+    document.querySelectorAll('.phone-number').forEach(el => {
+        if (el.tagName === 'A') {
+            el.href = `tel:${contactInfo.phone}`;
+            el.textContent = contactInfo.phoneDisplay;
+        } else {
+            el.textContent = contactInfo.phoneDisplay;
+        }
+    });
+    
+    // Email addresses
+    document.querySelectorAll('.email-address').forEach(el => {
+        if (el.tagName === 'A') {
+            el.href = `mailto:${contactInfo.email}`;
+            el.textContent = contactInfo.email;
+        } else {
+            el.textContent = contactInfo.email;
+        }
+    });
+    
+    // Business hours
+    document.querySelectorAll('.hours-weekdays').forEach(el => {
+        el.textContent = contactInfo.hours.weekdays;
+    });
+    document.querySelectorAll('.hours-saturday').forEach(el => {
+        el.textContent = contactInfo.hours.saturday;
+    });
+    document.querySelectorAll('.hours-sunday').forEach(el => {
+        el.textContent = contactInfo.hours.sunday;
+    });
+    
+    // Address
+    document.querySelectorAll('.address-display').forEach(el => {
+        el.textContent = `📍 ${contactInfo.address.full}`;
+    });
+    
+    // Service area
+    document.querySelectorAll('.service-area-text').forEach(el => {
+        el.textContent = contactInfo.serviceArea;
+    });
+    
+    // Social media links
+    document.querySelectorAll('.facebook-link').forEach(el => {
+        el.href = contactInfo.social.facebook;
+    });
+    document.querySelectorAll('.instagram-link').forEach(el => {
+        el.href = contactInfo.social.instagram;
+    });
+    document.querySelectorAll('.twitter-link').forEach(el => {
+        el.href = contactInfo.social.twitter;
+    });
+}
+
+// Wait for components to load before initializing
+document.addEventListener('componentsLoaded', function() {
+    initializeWebsite();
+});
+
+// Fallback initialization if components load event doesn't fire
 document.addEventListener('DOMContentLoaded', function() {
+    // Small delay to allow component loading
+    setTimeout(initializeWebsite, 100);
+});
+
+function initializeWebsite() {
+    // Populate contact information first
+    populateContactInfo();
+    
     // ==========================================================================
     // MOBILE NAVIGATION
     // ==========================================================================
@@ -15,16 +90,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Toggle mobile menu
     function toggleMobileMenu() {
-        navToggle.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        if (navToggle && navMenu) {
+            navToggle.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            body.style.overflow = navMenu.classList.contains('active') ? 'hidden' : '';
+        }
     }
 
     // Close mobile menu
     function closeMobileMenu() {
-        navToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        body.style.overflow = '';
+        if (navToggle && navMenu) {
+            navToggle.classList.remove('active');
+            navMenu.classList.remove('active');
+            body.style.overflow = '';
+        }
     }
 
     // Event listeners for mobile menu
@@ -39,16 +118,16 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Close menu when clicking outside
     document.addEventListener('click', function(e) {
-        if (navMenu.classList.contains('active') && 
+        if (navMenu && navMenu.classList.contains('active') && 
             !navMenu.contains(e.target) && 
-            !navToggle.contains(e.target)) {
+            navToggle && !navToggle.contains(e.target)) {
             closeMobileMenu();
         }
     });
 
     // Close menu on escape key
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) {
+        if (e.key === 'Escape' && navMenu && navMenu.classList.contains('active')) {
             closeMobileMenu();
         }
     });
@@ -59,7 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
     function smoothScroll(target) {
         const element = document.querySelector(target);
         if (element) {
-            const headerHeight = document.querySelector('.header').offsetHeight;
+            const header = document.querySelector('.header');
+            const headerHeight = header ? header.offsetHeight : 80;
             const elementPosition = element.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerHeight;
 
@@ -96,13 +176,18 @@ document.addEventListener('DOMContentLoaded', function() {
             faqQuestions.forEach(q => {
                 if (q !== this) {
                     q.setAttribute('aria-expanded', 'false');
-                    q.nextElementSibling.classList.remove('active');
+                    const otherAnswer = q.nextElementSibling;
+                    if (otherAnswer) {
+                        otherAnswer.classList.remove('active');
+                    }
                 }
             });
             
             // Toggle current FAQ item
             this.setAttribute('aria-expanded', !isExpanded);
-            answer.classList.toggle('active');
+            if (answer) {
+                answer.classList.toggle('active');
+            }
         });
 
         // Add keyboard support for FAQ
@@ -131,23 +216,29 @@ document.addEventListener('DOMContentLoaded', function() {
     function initGallery() {
         galleryImages = Array.from(galleryItems).map(item => ({
             src: item.getAttribute('data-src'),
-            alt: item.querySelector('img').getAttribute('alt')
+            alt: item.querySelector('img')?.getAttribute('alt') || 'Gallery image'
         }));
     }
 
     // Open lightbox
     function openLightbox(index) {
+        if (!lightbox || !lightboxImage) return;
+        
         currentImageIndex = index;
         updateLightboxImage();
         lightbox.classList.add('active');
         body.style.overflow = 'hidden';
         
         // Focus management for accessibility
-        lightboxClose.focus();
+        if (lightboxClose) {
+            lightboxClose.focus();
+        }
     }
 
     // Close lightbox
     function closeLightbox() {
+        if (!lightbox) return;
+        
         lightbox.classList.remove('active');
         body.style.overflow = '';
         
@@ -159,7 +250,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Update lightbox image
     function updateLightboxImage() {
-        if (galleryImages[currentImageIndex]) {
+        if (lightboxImage && galleryImages[currentImageIndex]) {
             lightboxImage.src = galleryImages[currentImageIndex].src;
             lightboxImage.alt = galleryImages[currentImageIndex].alt;
         }
@@ -188,7 +279,9 @@ document.addEventListener('DOMContentLoaded', function() {
             // Add keyboard support
             item.setAttribute('tabindex', '0');
             item.setAttribute('role', 'button');
-            item.setAttribute('aria-label', `View image: ${item.querySelector('img').getAttribute('alt')}`);
+            const img = item.querySelector('img');
+            const altText = img ? img.getAttribute('alt') : 'Gallery image';
+            item.setAttribute('aria-label', `View image: ${altText}`);
             
             item.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter' || e.key === ' ') {
@@ -212,15 +305,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Close lightbox when clicking outside image
-        lightbox.addEventListener('click', function(e) {
-            if (e.target === lightbox) {
-                closeLightbox();
-            }
-        });
+        if (lightbox) {
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+        }
 
         // Keyboard navigation for lightbox
         document.addEventListener('keydown', function(e) {
-            if (!lightbox.classList.contains('active')) return;
+            if (!lightbox || !lightbox.classList.contains('active')) return;
 
             switch(e.key) {
                 case 'Escape':
@@ -246,10 +341,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         
         // Add/remove scrolled class for styling
-        if (scrollTop > 100) {
-            header.classList.add('scrolled');
-        } else {
-            header.classList.remove('scrolled');
+        if (header) {
+            if (scrollTop > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
         }
 
         lastScrollTop = scrollTop;
@@ -298,7 +395,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }, 2000);
                 
                 // Here you would typically submit the form data
-                // For now, we'll just show the success message
                 console.log('Form would be submitted here');
             } else {
                 showFormMessage('Please fill in all required fields correctly.', 'error');
@@ -450,31 +546,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // ==========================================================================
-    // PERFORMANCE OPTIMIZATIONS
-    // ==========================================================================
-    
-    // Lazy load images that aren't already lazy loaded
-    if ('IntersectionObserver' in window) {
-        const imageObserver = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target;
-                    if (img.dataset.src) {
-                        img.src = img.dataset.src;
-                        img.removeAttribute('data-src');
-                        imageObserver.unobserve(img);
-                    }
-                }
-            });
-        });
-
-        // Observe images with data-src attribute
-        document.querySelectorAll('img[data-src]').forEach(img => {
-            imageObserver.observe(img);
-        });
-    }
-
-    // ==========================================================================
     // ACCESSIBILITY ENHANCEMENTS
     // ==========================================================================
     
@@ -506,64 +577,5 @@ document.addEventListener('DOMContentLoaded', function() {
     
     document.body.insertBefore(skipLink, document.body.firstChild);
 
-    // Add main content id if it doesn't exist
-    const main = document.querySelector('main');
-    if (main && !main.id) {
-        main.id = 'main-content';
-    }
-
-    // Announce page changes for screen readers
-    function announcePageChange(message) {
-        const announcement = document.createElement('div');
-        announcement.setAttribute('aria-live', 'polite');
-        announcement.setAttribute('aria-atomic', 'true');
-        announcement.className = 'sr-only';
-        announcement.textContent = message;
-        
-        document.body.appendChild(announcement);
-        
-        setTimeout(() => {
-            document.body.removeChild(announcement);
-        }, 1000);
-    }
-
-    // ==========================================================================
-    // UTILITY FUNCTIONS
-    // ==========================================================================
-    
-    // Debounce function for performance
-    function debounce(func, wait) {
-        let timeout;
-        return function executedFunction(...args) {
-            const later = () => {
-                clearTimeout(timeout);
-                func(...args);
-            };
-            clearTimeout(timeout);
-            timeout = setTimeout(later, wait);
-        };
-    }
-
-    // Throttle function for scroll events
-    function throttle(func, limit) {
-        let inThrottle;
-        return function() {
-            const args = arguments;
-            const context = this;
-            if (!inThrottle) {
-                func.apply(context, args);
-                inThrottle = true;
-                setTimeout(() => inThrottle = false, limit);
-            }
-        };
-    }
-
-    // Apply throttling to scroll events
-    const throttledScroll = throttle(function() {
-        // Scroll-based functionality here
-    }, 100);
-
-    window.addEventListener('scroll', throttledScroll);
-
-    console.log('Superior Tint & Vinyl website loaded successfully!');
-});
+    console.log('Superior Tint & Vinyl modular website loaded successfully!');
+}
