@@ -13,7 +13,7 @@ const contactInfo = {
     businessName: "Superior Tint & Vinyl",
     
     // Phone Numbers
-    phone: "(555) 123-4567",        // For tel: links
+    phone: "(555) 538",        // For tel: links
     phoneDisplay: "(555) 123-4567", // How it appears on site
     
     // Email
