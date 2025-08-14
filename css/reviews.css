@@ -1,0 +1,47 @@
+/* ==========================================================================
+   REVIEWS SECTION
+   ========================================================================== */
+.reviews {
+    padding: var(--section-padding) 0;
+    background: var(--subtle-accent);
+}
+
+.reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: var(--space-xl);
+}
+
+.review-card {
+    background: var(--black);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    transition: var(--transition);
+}
+
+.review-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: rgba(212, 175, 55, 0.3);
+}
+
+.review-stars {
+    margin-bottom: var(--space-md);
+}
+
+.star {
+    font-size: 1.2rem;
+}
+
+.review-text {
+    font-style: italic;
+    margin-bottom: var(--space-md);
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+}
+
+.review-author {
+    font-weight: var(--font-weight-medium);
+    color: #D4AF37;
+}

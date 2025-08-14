@@ -1,0 +1,157 @@
+/* ==========================================================================
+   RESPONSIVE DESIGN ENHANCEMENTS
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    :root {
+        --section-padding: var(--space-xl);
+    }
+    
+    .container {
+        padding: 0 var(--space-sm);
+    }
+    
+    .btn {
+        padding: var(--space-md);
+    }
+    
+    .service-card,
+    .package-card,
+    .review-card,
+    .contact-form {
+        padding: var(--space-lg);
+    }
+    
+    .comparison-table {
+        font-size: 0.875rem;
+    }
+    
+    .comparison-table th,
+    .comparison-table td {
+        padding: var(--space-sm);
+    }
+    
+    .hero-cta {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .hero-cta .btn {
+        width: 100%;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-2xl);
+    }
+    
+    .packages-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .package-card.recommended {
+        transform: none;
+    }
+    
+    .package-card.recommended:hover {
+        transform: translateY(-5px);
+    }
+    
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .social-links {
+        justify-content: center;
+    }
+}
+
+/* ==========================================================================
+   ACCESSIBILITY IMPROVEMENTS
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+    .hero::before {
+        background: none;
+    }
+    
+    .btn-primary::before {
+        display: none;
+    }
+    
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Focus styles for better accessibility */
+.btn:focus,
+.nav-link:focus,
+.faq-question:focus,
+input:focus,
+select:focus,
+textarea:focus,
+.gallery-item:focus {
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    :root {
+        --black: #000000;
+        --white: #FFFFFF;
+        --subtle-accent: #333333;
+    }
+    
+    .btn-outline {
+        border: 2px solid var(--white);
+    }
+    
+    .nav-link::after {
+        background: var(--white);
+    }
+}
+
+/* Print styles */
+@media print {
+    .header,
+    .mobile-cta-bar,
+    .lightbox {
+        display: none;
+    }
+    
+    .hero {
+        min-height: auto;
+        padding: 2rem 0;
+    }
+    
+    body {
+        padding-bottom: 0;
+    }
+    
+    * {
+        background: white !important;
+        color: black !important;
+    }
+}
+
+/* Large screens */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px;
+    }
+    
+    .hero-title {
+        font-size: 4.5rem;
+    }
+    
+    .section-title {
+        font-size: 3rem;
+    }
+}

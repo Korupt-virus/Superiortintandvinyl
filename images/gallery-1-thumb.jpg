@@ -1,0 +1,31 @@
+<svg width="400" height="300" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0B0B0B;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A1A1A;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#8D6E27;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <rect width="400" height="300" fill="url(#bgGrad)"/>
+  
+  <!-- Car silhouette -->
+  <g transform="translate(100, 100)">
+    <path d="M25 50 Q25 45 30 45 L80 45 Q90 45 95 35 L110 35 Q130 35 145 35 L175 35 Q185 45 190 45 L220 45 Q225 45 225 50 L225 75 Q225 80 220 80 L210 80 Q207 87 200 87 Q193 87 190 80 L60 80 Q57 87 50 87 Q43 87 40 80 L30 80 Q25 80 25 75 Z" fill="url(#goldGrad)" opacity="0.4"/>
+    <circle cx="50" cy="80" r="10" fill="#C9C9C9" opacity="0.6"/>
+    <circle cx="200" cy="80" r="10" fill="#C9C9C9" opacity="0.6"/>
+  </g>
+  
+  <!-- Text -->
+  <text x="200" y="180" font-family="Arial, sans-serif" font-size="18" font-weight="bold" text-anchor="middle" fill="url(#goldGrad)">Sedan Tint</text>
+  <text x="200" y="200" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#FFFFFF" opacity="0.8">Thumbnail</text>
+  
+  <!-- Border -->
+  <rect x="10" y="10" width="380" height="280" fill="none" stroke="url(#goldGrad)" stroke-width="1" stroke-dasharray="5,3" opacity="0.3"/>
+  
+  <!-- Bottom text -->
+  <text x="200" y="280" font-family="Arial, sans-serif" font-size="8" text-anchor="middle" fill="#FFFFFF" opacity="0.4">gallery-1-thumb.jpg (400x300)</text>
+</svg>

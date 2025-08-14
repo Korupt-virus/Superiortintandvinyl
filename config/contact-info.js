@@ -1,0 +1,48 @@
+// ==========================================================================
+// CONTACT INFORMATION CONFIGURATION
+// Edit this file to update contact info across the entire website
+// ==========================================================================
+
+const contactInfo = {
+    // Business Information
+    businessName: "Superior Tint & Vinyl",
+    
+    // Phone Numbers
+    phone: "(555) 123-4567",
+    phoneDisplay: "(555) 123-4567",
+    
+    // Email
+    email: "info@superiortintvinyl.com",
+    
+    // Address
+    address: {
+        street: "123 Main Street",
+        city: "Your City",
+        state: "ST",
+        zip: "12345",
+        full: "123 Main Street, Your City, ST 12345"
+    },
+    
+    // Business Hours
+    hours: {
+        weekdays: "Monday - Friday: 8:00 AM - 6:00 PM",
+        saturday: "Saturday: 9:00 AM - 4:00 PM",
+        sunday: "Sunday: Closed"
+    },
+    
+    // Social Media Links
+    social: {
+        facebook: "https://facebook.com/superiortintvinyl",
+        instagram: "https://instagram.com/superiortintvinyl",
+        twitter: "https://twitter.com/superiortintvinyl"
+    },
+    
+    // Service Area
+    serviceArea: "Your City and surrounding areas",
+    
+    // Emergency/After Hours
+    emergency: "For emergencies, call (555) 123-4567"
+};
+
+// Make it available globally
+window.contactInfo = contactInfo;
