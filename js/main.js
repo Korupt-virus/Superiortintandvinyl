@@ -471,7 +471,6 @@ function initializeWebsite() {
                 params.append(key, value);
             }
             
-            // Send the request
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
@@ -480,9 +479,23 @@ function initializeWebsite() {
                 body: params.toString()
             });
             
-            // Since emails are being sent, let's assume success after a reasonable delay
-            setTimeout(() => {
-                // Clear all messages and show success
+            console.log('Response status:', response.status);
+            console.log('Response ok:', response.ok);
+            
+            // Check if response is successful (200-299)
+            if (response.ok) {
+                // Try to parse JSON, but don't fail if it's not JSON
+                let result = null;
+                try {
+                    const text = await response.text();
+                    console.log('Response text:', text);
+                    result = JSON.parse(text);
+                    console.log('Parsed result:', result);
+                } catch (parseError) {
+                    console.log('Could not parse JSON, but response was ok');
+                }
+                
+                // If we got a 200 response, consider it successful
                 clearAllMessages();
                 showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
                 
@@ -495,34 +508,19 @@ function initializeWebsite() {
                     });
                 }, 2000);
                 
-                // Reset button state
-                setTimeout(() => {
-                    submitButton.textContent = originalButtonText;
-                    submitButton.disabled = false;
-                }, 2000);
-            }, 2000); // Show success after 2 seconds
+            } else {
+                throw new Error(`Server returned status ${response.status}`);
+            }
             
         } catch (error) {
             console.error('Form submission error:', error);
-            // Even if there's a technical error, since emails are working, show success
+            clearAllMessages();
+            showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
+        } finally {
+            // Reset button state after a delay
             setTimeout(() => {
-                clearAllMessages();
-                showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
-                
-                // Reset form after delay
-                setTimeout(() => {
-                    form.reset();
-                    // Clear any error states
-                    form.querySelectorAll('.error').forEach(field => {
-                        clearFieldError(field);
-                    });
-                }, 2000);
-                
-                // Reset button state
-                setTimeout(() => {
-                    submitButton.textContent = originalButtonText;
-                    submitButton.disabled = false;
-                }, 2000);
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
             }, 2000);
         }
     }
