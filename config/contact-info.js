@@ -20,7 +20,7 @@ const contactInfo = {
         city: "Your City",
         state: "ST",
         zip: "12345",
-        full: "123 Main Street, Your City, ST 12345"
+        full: ""//"123 Main Street, Your City, ST 12345"
     },
     
     // Business Hours
