@@ -41,7 +41,7 @@ const contactInfo = {
     serviceArea: "Your City and surrounding areas",
     
     // Emergency/After Hours
-    emergency: "For emergencies, call (555) 123-4567"
+    emergency: "For emergencies, call (480)-538-9360"
 };
 
 // Make it available globally

@@ -440,12 +440,23 @@ function initializeWebsite() {
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 
-                // Create a hidden form to submit to iframe
+                // Create a completely hidden iframe that won't open new windows
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.style.width = '0';
+                iframe.style.height = '0';
+                iframe.style.border = 'none';
+                iframe.style.position = 'absolute';
+                iframe.style.left = '-9999px';
+                iframe.name = 'hidden-submission-frame';
+                iframe.sandbox = 'allow-forms allow-scripts';
+                
+                // Create a hidden form to submit to this iframe
                 const hiddenForm = document.createElement('form');
                 hiddenForm.style.display = 'none';
                 hiddenForm.action = 'https://api.web3forms.com/submit';
                 hiddenForm.method = 'POST';
-                hiddenForm.target = 'form-submission-frame';
+                hiddenForm.target = 'hidden-submission-frame';
                 
                 // Copy all form data to hidden form
                 const formData = new FormData(contactForm);
@@ -457,10 +468,20 @@ function initializeWebsite() {
                     hiddenForm.appendChild(input);
                 }
                 
-                // Append to body and submit
+                // Append iframe and form to body, submit, then remove
+                document.body.appendChild(iframe);
                 document.body.appendChild(hiddenForm);
                 hiddenForm.submit();
-                document.body.removeChild(hiddenForm);
+                
+                // Clean up after a short delay
+                setTimeout(() => {
+                    if (document.body.contains(hiddenForm)) {
+                        document.body.removeChild(hiddenForm);
+                    }
+                    if (document.body.contains(iframe)) {
+                        document.body.removeChild(iframe);
+                    }
+                }, 3000);
                 
                 // Show success message after delay
                 setTimeout(() => {
