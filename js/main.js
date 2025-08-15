@@ -416,6 +416,13 @@ function initializeWebsite() {
         // Form submission
         contactForm.addEventListener('submit', function(e) {
             e.preventDefault();
+            e.stopPropagation(); // Prevent any bubbling
+            
+            // Clear any existing messages first
+            const existingMessage = contactForm.querySelector('.form-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
             
             let isValid = true;
             
@@ -559,52 +566,70 @@ function initializeWebsite() {
 
     // Show form message
     function showFormMessage(message, type) {
-        // Clear any existing message first
-        const existingMessage = contactForm.querySelector('.form-message');
-        if (existingMessage) {
-            existingMessage.remove();
-        }
+        // Always remove any existing message first
+        const existingMessages = contactForm.querySelectorAll('.form-message');
+        existingMessages.forEach(msg => msg.remove());
         
-        let messageElement = document.createElement('div');
-        messageElement.className = `form-message ${type}`;
-        messageElement.style.padding = '1rem';
-        messageElement.style.borderRadius = '8px';
-        messageElement.style.marginTop = '1rem';
-        messageElement.style.fontWeight = '500';
-        messageElement.style.transition = 'all 0.3s ease';
-        
-        messageElement.textContent = message;
-        
-        if (type === 'success') {
-            messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
-            messageElement.style.color = '#48bb78';
-            messageElement.style.border = '1px solid rgba(72, 187, 120, 0.3)';
-        } else if (type === 'info') {
-            messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
-            messageElement.style.color = '#3b82f6';
-            messageElement.style.border = '1px solid rgba(59, 130, 246, 0.3)';
-        } else {
-            messageElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
-            messageElement.style.color = '#ff6b6b';
-            messageElement.style.border = '1px solid rgba(255, 107, 107, 0.3)';
-        }
-        
-        contactForm.appendChild(messageElement);
-        
-        // Auto-hide message - longer for success, shorter for errors
-        const hideDelay = type === 'success' ? 4000 : (type === 'info' ? 0 : 5000); // Don't auto-hide info messages
-        if (hideDelay > 0) {
+        // Wait a tiny bit to ensure cleanup is complete
+        setTimeout(() => {
+            const messageElement = document.createElement('div');
+            messageElement.className = `form-message ${type}`;
+            messageElement.style.padding = '1rem';
+            messageElement.style.borderRadius = '8px';
+            messageElement.style.marginTop = '1rem';
+            messageElement.style.fontWeight = '500';
+            messageElement.style.transition = 'opacity 0.3s ease';
+            messageElement.style.opacity = '0';
+            
+            messageElement.textContent = message;
+            
+            if (type === 'success') {
+                messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
+                messageElement.style.color = '#48bb78';
+                messageElement.style.border = '1px solid rgba(72, 187, 120, 0.3)';
+            } else if (type === 'info') {
+                messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+                messageElement.style.color = '#3b82f6';
+                messageElement.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+            } else {
+                messageElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+                messageElement.style.color = '#ff6b6b';
+                messageElement.style.border = '1px solid rgba(255, 107, 107, 0.3)';
+            }
+            
+            contactForm.appendChild(messageElement);
+            
+            // Fade in the message
             setTimeout(() => {
-                if (messageElement.parentNode) {
-                    messageElement.style.opacity = '0';
-                    setTimeout(() => {
-                        if (messageElement.parentNode) {
-                            messageElement.remove();
-                        }
-                    }, 300);
-                }
-            }, hideDelay);
-        }
+                messageElement.style.opacity = '1';
+            }, 10);
+            
+            // Auto-hide message based on type
+            if (type === 'success') {
+                setTimeout(() => {
+                    if (messageElement.parentNode) {
+                        messageElement.style.opacity = '0';
+                        setTimeout(() => {
+                            if (messageElement.parentNode) {
+                                messageElement.remove();
+                            }
+                        }, 300);
+                    }
+                }, 4000);
+            } else if (type === 'error') {
+                setTimeout(() => {
+                    if (messageElement.parentNode) {
+                        messageElement.style.opacity = '0';
+                        setTimeout(() => {
+                            if (messageElement.parentNode) {
+                                messageElement.remove();
+                            }
+                        }, 300);
+                    }
+                }, 5000);
+            }
+            // Info messages don't auto-hide
+        }, 10);
     }
 
     // Email validation

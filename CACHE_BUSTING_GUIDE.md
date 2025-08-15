@@ -9,96 +9,94 @@ When you make changes to your website, users' browsers might show old cached ver
 - Edit your CSS, JavaScript, or HTML files as needed
 - Test your changes locally
 
-### **Step 2: Update Version Numbers**
-Every time you make changes to CSS or JavaScript files, update the version number in `index.html`:
+### **Step 2: Update Version Numbers (ONLY for changed files)**
+**IMPORTANT:** Only update version numbers for files that you actually modified.
 
-**Current version format: `?v=2025081501`**
+**Current version format: `?v=2025081504`**
 - `2025` = Year
 - `08` = Month
 - `15` = Day  
-- `01` = Update number for that day
+- `04` = Update number for that day
 
-### **Step 3: How to Update**
+### **Step 3: Which Files Need Version Updates**
 
-**When you make changes, change this:**
+**✅ UPDATE VERSION when you change:**
+- CSS files (any styling changes)
+- JavaScript files (any functionality changes)
+
+**❌ DON'T UPDATE VERSION for:**
+- CSS files you didn't modify
+- JavaScript files you didn't modify
+- Images (they don't cache the same way)
+- HTML content changes
+
+### **Step 4: How to Update**
+
+**Example: If you only changed `main.js`:**
 ```html
+<!-- DON'T change these (not modified) -->
 <link rel="stylesheet" href="css/contact.css?v=2025081501">
-<script src="js/main.js?v=2025081501" defer></script>
-```
+<script src="js/component-loader.js?v=2025081501"></script>
 
-**To this (increment the last number):**
-```html
-<link rel="stylesheet" href="css/contact.css?v=2025081502">
+<!-- ONLY change this (was modified) -->
 <script src="js/main.js?v=2025081502" defer></script>
 ```
 
-### **Step 4: Push to GitHub**
+### **Step 5: Push to GitHub**
 ```bash
 git add .
-git commit -m "Update cache version for [describe your changes]"
+git commit -m "Update [describe your changes] - cache version 2025081502"
 git push origin main
 ```
 
 ## 🔄 **Quick Version Update Process**
 
-1. **Find these lines in `index.html`:**
-   - All `<link rel="stylesheet"` lines with `?v=`
-   - All `<script src="js/` lines with `?v=`
-
-2. **Change the version number:**
-   - If today is August 15, 2025 and this is your 2nd update: `?v=2025081502`
-   - If today is August 16, 2025 and this is your 1st update: `?v=2025081601`
-
-3. **Update ALL CSS and JS version numbers to the same new version**
+1. **Identify which files you changed**
+2. **Only update those file versions in `index.html`**
+3. **Increment to next number** (e.g., `01` → `02` → `03`)
+4. **Keep unchanged files at their current version**
 
 ## 📝 **Example Update Workflow**
 
-Let's say you update the contact form styling:
+Let's say you update ONLY the contact form JavaScript:
 
-1. Edit `css/contact.css`
-2. Change ALL version numbers in `index.html` from `?v=2025081501` to `?v=2025081502`
-3. Commit and push:
-   ```bash
-   git add .
-   git commit -m "Update contact form styling - cache version 2025081502"
-   git push origin main
+1. Edit `js/main.js`
+2. In `index.html`, change ONLY:
+   ```html
+   <!-- Before -->
+   <script src="js/main.js?v=2025081501" defer></script>
+   
+   <!-- After -->
+   <script src="js/main.js?v=2025081502" defer></script>
    ```
+3. Leave all CSS versions unchanged since you didn't modify them
+4. Commit and push
 
-## ⚡ **Alternative: Quick Update Script**
+## ⚡ **Efficient Strategy**
 
-You can create a simple find-and-replace:
-1. Open `index.html`
-2. Find: `?v=2025081501` 
-3. Replace with: `?v=2025081502` (or your new version)
-4. Replace All
+- **Small changes**: Only update the specific file you changed
+- **Multiple file changes**: Update all changed files to the same new version
+- **Major updates**: You can update everything to the same version if preferred
 
 ## 🎯 **When to Update Versions**
 
 **Always update when you change:**
 - ✅ CSS files (styling changes)
 - ✅ JavaScript files (functionality changes)
-- ✅ Important content updates
 
 **Don't need to update for:**
-- ❌ Image changes (they don't cache the same way)
-- ❌ Minor text content changes in HTML
+- ❌ Files you didn't modify
+- ❌ Image changes
+- ❌ Minor HTML content changes
 - ❌ Configuration file changes
 
-## 🔍 **How to Test**
+## � **Pro Tips**
 
-After pushing updates:
-1. Visit your website in incognito/private mode
-2. Check if your changes appear
-3. If not, try a hard refresh (`Ctrl + F5`)
-4. If still not working, verify your version numbers were updated
-
-## 💡 **Pro Tips**
-
-- **Keep version numbers consistent** across all files in the same update
+- **Be selective**: Only version files you actually changed
 - **Use descriptive commit messages** so you can track what changed
 - **Test in incognito mode** to simulate new users
-- **Consider major version jumps** for big updates (e.g., `?v=2025081600`)
+- **Keep a mental note** of which files you modified
 
 ---
 
-**Remember:** Every time you make changes, increment that version number!
+**Remember:** Only update versions for files you actually changed!
