@@ -436,7 +436,7 @@ function initializeWebsite() {
                 
                 // Get the submit button and disable it
                 const submitButton = contactForm.querySelector('button[type="submit"]');
-                const originalText = submitButton.textContent;
+                const originalText = 'Get My Quote'; // Set the correct original text explicitly
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 
@@ -488,7 +488,11 @@ function initializeWebsite() {
                     clearAllMessages();
                     showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
                     
-                    // Reset form and button after showing success
+                    // Change button to "Sent" immediately when success shows
+                    submitButton.textContent = 'Sent';
+                    submitButton.disabled = false;
+                    
+                    // Reset form and button back to original after delay
                     setTimeout(() => {
                         contactForm.reset();
                         // Clear any error states
@@ -497,8 +501,7 @@ function initializeWebsite() {
                         });
                         clearAllMessages();
                         
-                        // Reset button
-                        submitButton.disabled = false;
+                        // Reset button back to original text
                         submitButton.textContent = originalText;
                     }, 3000);
                 }, 1500);
