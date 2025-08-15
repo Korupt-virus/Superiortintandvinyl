@@ -471,8 +471,8 @@ function initializeWebsite() {
                 params.append(key, value);
             }
             
-            // Add a small delay to prevent any race conditions
-            await new Promise(resolve => setTimeout(resolve, 300));
+            // Add a longer delay to prevent any race conditions
+            await new Promise(resolve => setTimeout(resolve, 800));
             
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
@@ -482,8 +482,8 @@ function initializeWebsite() {
                 body: params.toString()
             });
             
-            // Wait a bit more to ensure the request is fully processed
-            await new Promise(resolve => setTimeout(resolve, 200));
+            // Wait longer to ensure the request is fully processed
+            await new Promise(resolve => setTimeout(resolve, 600));
             
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -509,11 +509,14 @@ function initializeWebsite() {
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            // Only show error if we're still in a valid state
-            if (submitButton.disabled) {
-                clearAllMessages();
-                showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
-            }
+            // Add much longer delay before showing any error messages
+            setTimeout(() => {
+                // Only show error if we're still in a valid state and enough time has passed
+                if (submitButton.disabled) {
+                    clearAllMessages();
+                    showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
+                }
+            }, 1500); // 1.5 second delay before showing error
         } finally {
             // Reset button state after a delay
             setTimeout(() => {
