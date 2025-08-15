@@ -11,6 +11,7 @@
         linear-gradient(135deg, var(--black) 0%, var(--subtle-accent) 100%);
     position: relative;
     overflow: hidden;
+    padding-top: var(--header-height);
 }
 
 .hero::before {
@@ -96,6 +97,10 @@
 }
 
 @media (max-width: 480px) {
+    .hero {
+        padding-top: calc(var(--header-height) + var(--space-md));
+    }
+    
     .hero-logo-img {
         height: 120px;
     }
