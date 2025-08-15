@@ -431,8 +431,36 @@ function initializeWebsite() {
                 // Show loading message
                 showFormMessage('Sending your quote request...', 'info');
                 
-                // Allow the form to submit naturally to Web3Forms
-                // The form will handle the submission and redirect
+                // Get the submit button and disable it
+                const submitButton = contactForm.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.disabled = true;
+                submitButton.textContent = 'Sending...';
+                
+                // Set up iframe load listener for success detection
+                const iframe = contactForm.querySelector('iframe[name="form-submission-frame"]');
+                
+                // Create a timeout to show success message after submission
+                setTimeout(() => {
+                    clearAllMessages();
+                    showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
+                    
+                    // Reset form and button after showing success
+                    setTimeout(() => {
+                        contactForm.reset();
+                        // Clear any error states
+                        contactForm.querySelectorAll('.error').forEach(field => {
+                            clearFieldError(field);
+                        });
+                        clearAllMessages();
+                        
+                        // Reset button
+                        submitButton.disabled = false;
+                        submitButton.textContent = originalText;
+                    }, 3000);
+                }, 1500); // Show success after 1.5 seconds
+                
+                // Allow the form to submit to iframe (don't prevent default)
                 return true;
             } else {
                 e.preventDefault();
