@@ -419,10 +419,7 @@ function initializeWebsite() {
             e.stopPropagation(); // Prevent any bubbling
             
             // Clear any existing messages first
-            const existingMessage = contactForm.querySelector('.form-message');
-            if (existingMessage) {
-                existingMessage.remove();
-            }
+            clearAllMessages();
             
             let isValid = true;
             
@@ -434,9 +431,14 @@ function initializeWebsite() {
             });
             
             if (isValid) {
-                submitFormToWeb3Forms(contactForm);
+                // Wait a moment to ensure messages are cleared
+                setTimeout(() => {
+                    submitFormToWeb3Forms(contactForm);
+                }, 50);
             } else {
-                showFormMessage('Please fill in all required fields correctly.', 'error');
+                setTimeout(() => {
+                    showFormMessage('Please fill in all required fields correctly.', 'error');
+                }, 100);
             }
         });
     }
@@ -451,9 +453,12 @@ function initializeWebsite() {
             return;
         }
         
-        // Show loading state
+        // Show loading state immediately
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
+        
+        // Clear any existing messages and show loading message
+        clearAllMessages();
         showFormMessage('Sending your quote request...', 'info');
         
         try {
@@ -466,6 +471,9 @@ function initializeWebsite() {
                 params.append(key, value);
             }
             
+            // Add a small delay to prevent any race conditions
+            await new Promise(resolve => setTimeout(resolve, 300));
+            
             const response = await fetch('https://api.web3forms.com/submit', {
                 method: 'POST',
                 headers: {
@@ -474,6 +482,9 @@ function initializeWebsite() {
                 body: params.toString()
             });
             
+            // Wait a bit more to ensure the request is fully processed
+            await new Promise(resolve => setTimeout(resolve, 200));
+            
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -481,15 +492,11 @@ function initializeWebsite() {
             const result = await response.json();
             
             if (result.success) {
-                // Clear any existing messages before showing success
-                const existingMessage = form.querySelector('.form-message');
-                if (existingMessage) {
-                    existingMessage.remove();
-                }
-                
+                // Clear all messages and show success
+                clearAllMessages();
                 showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
                 
-                // Reset form after short delay
+                // Reset form after delay
                 setTimeout(() => {
                     form.reset();
                     // Clear any error states
@@ -502,19 +509,31 @@ function initializeWebsite() {
             }
         } catch (error) {
             console.error('Form submission error:', error);
-            // Clear any existing messages before showing error
-            const existingMessage = form.querySelector('.form-message');
-            if (existingMessage) {
-                existingMessage.remove();
+            // Only show error if we're still in a valid state
+            if (submitButton.disabled) {
+                clearAllMessages();
+                showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
             }
-            showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
         } finally {
-            // Reset button state after a delay to prevent rapid clicking
+            // Reset button state after a delay
             setTimeout(() => {
                 submitButton.textContent = originalButtonText;
                 submitButton.disabled = false;
             }, 2000);
         }
+    }
+
+    // Helper function to clear all form messages
+    function clearAllMessages() {
+        const existingMessages = contactForm.querySelectorAll('.form-message');
+        existingMessages.forEach(msg => {
+            msg.style.opacity = '0';
+            setTimeout(() => {
+                if (msg.parentNode) {
+                    msg.remove();
+                }
+            }, 100);
+        });
     }
 
     // Field validation function
@@ -566,70 +585,64 @@ function initializeWebsite() {
 
     // Show form message
     function showFormMessage(message, type) {
-        // Always remove any existing message first
-        const existingMessages = contactForm.querySelectorAll('.form-message');
-        existingMessages.forEach(msg => msg.remove());
+        // Create and show the message element
+        const messageElement = document.createElement('div');
+        messageElement.className = `form-message ${type}`;
+        messageElement.style.padding = '1rem';
+        messageElement.style.borderRadius = '8px';
+        messageElement.style.marginTop = '1rem';
+        messageElement.style.fontWeight = '500';
+        messageElement.style.opacity = '0';
+        messageElement.style.transition = 'opacity 0.3s ease';
         
-        // Wait a tiny bit to ensure cleanup is complete
+        messageElement.textContent = message;
+        
+        if (type === 'success') {
+            messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
+            messageElement.style.color = '#48bb78';
+            messageElement.style.border = '1px solid rgba(72, 187, 120, 0.3)';
+        } else if (type === 'info') {
+            messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            messageElement.style.color = '#3b82f6';
+            messageElement.style.border = '1px solid rgba(59, 130, 246, 0.3)';
+        } else {
+            messageElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
+            messageElement.style.color = '#ff6b6b';
+            messageElement.style.border = '1px solid rgba(255, 107, 107, 0.3)';
+        }
+        
+        contactForm.appendChild(messageElement);
+        
+        // Fade in the message
         setTimeout(() => {
-            const messageElement = document.createElement('div');
-            messageElement.className = `form-message ${type}`;
-            messageElement.style.padding = '1rem';
-            messageElement.style.borderRadius = '8px';
-            messageElement.style.marginTop = '1rem';
-            messageElement.style.fontWeight = '500';
-            messageElement.style.transition = 'opacity 0.3s ease';
-            messageElement.style.opacity = '0';
-            
-            messageElement.textContent = message;
-            
-            if (type === 'success') {
-                messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
-                messageElement.style.color = '#48bb78';
-                messageElement.style.border = '1px solid rgba(72, 187, 120, 0.3)';
-            } else if (type === 'info') {
-                messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
-                messageElement.style.color = '#3b82f6';
-                messageElement.style.border = '1px solid rgba(59, 130, 246, 0.3)';
-            } else {
-                messageElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
-                messageElement.style.color = '#ff6b6b';
-                messageElement.style.border = '1px solid rgba(255, 107, 107, 0.3)';
-            }
-            
-            contactForm.appendChild(messageElement);
-            
-            // Fade in the message
-            setTimeout(() => {
-                messageElement.style.opacity = '1';
-            }, 10);
-            
-            // Auto-hide message based on type
-            if (type === 'success') {
-                setTimeout(() => {
-                    if (messageElement.parentNode) {
-                        messageElement.style.opacity = '0';
-                        setTimeout(() => {
-                            if (messageElement.parentNode) {
-                                messageElement.remove();
-                            }
-                        }, 300);
-                    }
-                }, 4000);
-            } else if (type === 'error') {
-                setTimeout(() => {
-                    if (messageElement.parentNode) {
-                        messageElement.style.opacity = '0';
-                        setTimeout(() => {
-                            if (messageElement.parentNode) {
-                                messageElement.remove();
-                            }
-                        }, 300);
-                    }
-                }, 5000);
-            }
-            // Info messages don't auto-hide
+            messageElement.style.opacity = '1';
         }, 10);
+        
+        // Auto-hide based on type
+        if (type === 'success') {
+            setTimeout(() => {
+                if (messageElement.parentNode) {
+                    messageElement.style.opacity = '0';
+                    setTimeout(() => {
+                        if (messageElement.parentNode) {
+                            messageElement.remove();
+                        }
+                    }, 300);
+                }
+            }, 4000);
+        } else if (type === 'error') {
+            setTimeout(() => {
+                if (messageElement.parentNode) {
+                    messageElement.style.opacity = '0';
+                    setTimeout(() => {
+                        if (messageElement.parentNode) {
+                            messageElement.remove();
+                        }
+                    }, 300);
+                }
+            }, 5000);
+        }
+        // Info messages are managed by the submission process
     }
 
     // Email validation
