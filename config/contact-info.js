@@ -26,8 +26,6 @@ const contactInfo = {
     // Business Hours
     hours: {
         weekdays: "Monday - Friday: 8:00 AM - 6:00 PM",
-        saturday: "Saturday: 9:00 AM - 4:00 PM",
-        sunday: "Sunday: Closed"
     },
     
     // Social Media Links
@@ -38,7 +36,7 @@ const contactInfo = {
     },
     
     // Service Area
-    serviceArea: "Your City and surrounding areas",
+    serviceArea: "Phoenix, Chandler, Mesa, and surrounding areas",
     
     // Emergency/After Hours
     emergency: "For emergencies, call (480)-538-9360"
