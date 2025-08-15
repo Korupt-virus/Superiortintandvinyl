@@ -54,10 +54,12 @@ async function loadAllComponents() {
     
     try {
         await Promise.all(loadPromises);
-        console.log('All components loaded successfully');
         
-        // Dispatch custom event when all components are loaded
-        document.dispatchEvent(new CustomEvent('componentsLoaded'));
+        // Add a small delay to ensure DOM is ready
+        setTimeout(function() {
+            // Dispatch custom event when all components are loaded
+            document.dispatchEvent(new CustomEvent('componentsLoaded'));
+        }, 100);
     } catch (error) {
         console.error('Error loading components:', error);
     }

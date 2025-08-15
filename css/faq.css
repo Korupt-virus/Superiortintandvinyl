@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FAQ SECTION
+   FAQ SECTION - Simplified for Universal Browser Support
    ========================================================================== */
 .faq {
     padding: var(--section-padding) 0;
@@ -17,6 +17,8 @@
     margin-bottom: var(--space-md);
     overflow: hidden;
     transition: var(--transition);
+    position: relative;
+    z-index: 1;
 }
 
 .faq-item:hover {
@@ -31,15 +33,46 @@
     text-align: left;
     color: var(--white);
     font-weight: var(--font-weight-medium);
-    cursor: pointer;
+    cursor: pointer !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: background-color 0.2s ease;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    pointer-events: auto !important;
+    position: relative !important;
+    z-index: 100 !important;
+    /* Remove any potential pseudo-elements that might block clicks */
+}
+
+.faq-question::before,
+.faq-question::after {
+    display: none !important;
+}
+
+.faq-question span {
+    pointer-events: none !important;
+}
+
+.faq-icon {
+    font-size: 1.5rem;
     transition: var(--transition);
+    color: rgba(255, 255, 255, 0.7);
+    pointer-events: none !important;
 }
 
 .faq-question:hover {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.faq-question:active,
+.faq-question:focus {
+    background: rgba(255, 255, 255, 0.1) !important;
+    outline: 2px solid #D4AF37;
+    outline-offset: 2px;
 }
 
 .faq-question[aria-expanded="true"] .faq-icon {
@@ -51,6 +84,7 @@
     font-size: 1.5rem;
     transition: var(--transition);
     color: rgba(255, 255, 255, 0.7);
+    pointer-events: none !important;
 }
 
 .faq-answer {
@@ -63,7 +97,7 @@
 
 .faq-answer.active {
     padding: var(--space-lg);
-    max-height: 200px;
+    max-height: 300px;
 }
 
 .faq-answer p {

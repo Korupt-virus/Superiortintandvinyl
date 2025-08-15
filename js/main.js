@@ -7,7 +7,6 @@
 // Populate contact information from config
 function populateContactInfo() {
     if (typeof contactInfo === 'undefined') {
-        console.warn('Contact info not loaded yet, retrying...');
         setTimeout(populateContactInfo, 100);
         return;
     }
@@ -72,8 +71,16 @@ document.addEventListener('componentsLoaded', function() {
 
 // Fallback initialization if components load event doesn't fire
 document.addEventListener('DOMContentLoaded', function() {
-    // Small delay to allow component loading
-    setTimeout(initializeWebsite, 100);
+    setTimeout(function() {
+        initializeWebsite();
+    }, 100);
+});
+
+// Additional fallback for when everything else is ready
+window.addEventListener('load', function() {
+    setTimeout(function() {
+        initializeWebsite();
+    }, 200);
 });
 
 function initializeWebsite() {
@@ -165,39 +172,73 @@ function initializeWebsite() {
     // ==========================================================================
     // FAQ ACCORDION
     // ==========================================================================
-    const faqQuestions = document.querySelectorAll('.faq-question');
-
-    faqQuestions.forEach(question => {
-        question.addEventListener('click', function() {
-            const answer = this.nextElementSibling;
-            const isExpanded = this.getAttribute('aria-expanded') === 'true';
+    
+    // Define toggleFAQ function globally so it's available for onclick handlers
+    window.toggleFAQ = function(button) {
+        try {
+            // Get the answer div (next sibling)
+            const answer = button.nextElementSibling;
+            const isExpanded = button.getAttribute('aria-expanded') === 'true';
             
-            // Close all other FAQ items
-            faqQuestions.forEach(q => {
-                if (q !== this) {
-                    q.setAttribute('aria-expanded', 'false');
-                    const otherAnswer = q.nextElementSibling;
-                    if (otherAnswer) {
-                        otherAnswer.classList.remove('active');
-                    }
-                }
+            // Close all other FAQ items first
+            const allQuestions = document.querySelectorAll('.faq-question');
+            const allAnswers = document.querySelectorAll('.faq-answer');
+            
+            allQuestions.forEach(function(q) {
+                q.setAttribute('aria-expanded', 'false');
             });
             
-            // Toggle current FAQ item
-            this.setAttribute('aria-expanded', !isExpanded);
-            if (answer) {
-                answer.classList.toggle('active');
+            allAnswers.forEach(function(a) {
+                a.classList.remove('active');
+            });
+            
+            // Toggle current item
+            if (!isExpanded) {
+                button.setAttribute('aria-expanded', 'true');
+                answer.classList.add('active');
+            } else {
+                button.setAttribute('aria-expanded', 'false');
+                answer.classList.remove('active');
             }
-        });
+        } catch (error) {
+            console.error('Error in toggleFAQ:', error);
+        }
+    };
 
-        // Add keyboard support for FAQ
-        question.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                this.click();
+    // Backup FAQ initialization (fallback only)
+    function initializeFAQBackup() {
+        if (typeof window.toggleFAQ === 'function') {
+            return;
+        }
+        
+        const faqQuestions = document.querySelectorAll('.faq-question');
+        
+        faqQuestions.forEach(function(question) {
+            if (!question.onclick) {
+                question.onclick = function() {
+                    const answer = this.nextElementSibling;
+                    const isExpanded = this.getAttribute('aria-expanded') === 'true';
+                    
+                    // Close all others
+                    document.querySelectorAll('.faq-question').forEach(function(q) {
+                        q.setAttribute('aria-expanded', 'false');
+                    });
+                    document.querySelectorAll('.faq-answer').forEach(function(a) {
+                        a.classList.remove('active');
+                    });
+                    
+                    // Toggle current
+                    if (!isExpanded) {
+                        this.setAttribute('aria-expanded', 'true');
+                        answer.classList.add('active');
+                    }
+                };
             }
         });
-    });
+    }
+    
+    // Try backup initialization
+    setTimeout(initializeFAQBackup, 500);
 
     // ==========================================================================
     // GALLERY LIGHTBOX
@@ -386,20 +427,65 @@ function initializeWebsite() {
             });
             
             if (isValid) {
-                // Show success message or submit form
-                showFormMessage('Thank you! We\'ll get back to you soon.', 'success');
-                
-                // Reset form after short delay
-                setTimeout(() => {
-                    contactForm.reset();
-                }, 2000);
-                
-                // Here you would typically submit the form data
-                console.log('Form would be submitted here');
+                submitFormToWeb3Forms(contactForm);
             } else {
                 showFormMessage('Please fill in all required fields correctly.', 'error');
             }
         });
+    }
+
+    // Submit form to Web3Forms using proper AJAX approach
+    async function submitFormToWeb3Forms(form) {
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        
+        // Show loading state
+        submitButton.textContent = 'Sending...';
+        submitButton.disabled = true;
+        showFormMessage('Sending your quote request...', 'info');
+        
+        try {
+            // Create FormData object
+            const formData = new FormData(form);
+            
+            // Convert FormData to URLSearchParams for proper encoding
+            const params = new URLSearchParams();
+            for (const [key, value] of formData.entries()) {
+                params.append(key, value);
+            }
+            
+            const response = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: params.toString()
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
+                
+                // Reset form after short delay
+                setTimeout(() => {
+                    form.reset();
+                    // Clear any error states
+                    form.querySelectorAll('.error').forEach(field => {
+                        clearFieldError(field);
+                    });
+                }, 2000);
+            } else {
+                throw new Error(result.message || 'Form submission failed');
+            }
+        } catch (error) {
+            console.error('Form submission error:', error);
+            showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
+        } finally {
+            // Reset button state
+            submitButton.textContent = originalButtonText;
+            submitButton.disabled = false;
+        }
     }
 
     // Field validation function
@@ -470,6 +556,10 @@ function initializeWebsite() {
             messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
             messageElement.style.color = '#48bb78';
             messageElement.style.border = '1px solid rgba(72, 187, 120, 0.3)';
+        } else if (type === 'info') {
+            messageElement.style.backgroundColor = 'rgba(59, 130, 246, 0.1)';
+            messageElement.style.color = '#3b82f6';
+            messageElement.style.border = '1px solid rgba(59, 130, 246, 0.3)';
         } else {
             messageElement.style.backgroundColor = 'rgba(255, 107, 107, 0.1)';
             messageElement.style.color = '#ff6b6b';
