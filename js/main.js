@@ -439,6 +439,11 @@ function initializeWebsite() {
         const submitButton = form.querySelector('button[type="submit"]');
         const originalButtonText = submitButton.textContent;
         
+        // Prevent multiple submissions
+        if (submitButton.disabled) {
+            return;
+        }
+        
         // Show loading state
         submitButton.textContent = 'Sending...';
         submitButton.disabled = true;
@@ -482,9 +487,11 @@ function initializeWebsite() {
             console.error('Form submission error:', error);
             showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
         } finally {
-            // Reset button state
-            submitButton.textContent = originalButtonText;
-            submitButton.disabled = false;
+            // Reset button state after a delay to prevent rapid clicking
+            setTimeout(() => {
+                submitButton.textContent = originalButtonText;
+                submitButton.disabled = false;
+            }, 2000);
         }
     }
 
