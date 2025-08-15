@@ -415,6 +415,9 @@ function initializeWebsite() {
 
         // Form submission
         contactForm.addEventListener('submit', function(e) {
+            // Always prevent default form submission to avoid page reload
+            e.preventDefault();
+            
             // Clear any existing messages first
             clearAllMessages();
             
@@ -437,10 +440,29 @@ function initializeWebsite() {
                 submitButton.disabled = true;
                 submitButton.textContent = 'Sending...';
                 
-                // Set up iframe load listener for success detection
-                const iframe = contactForm.querySelector('iframe[name="form-submission-frame"]');
+                // Create a hidden form to submit to iframe
+                const hiddenForm = document.createElement('form');
+                hiddenForm.style.display = 'none';
+                hiddenForm.action = 'https://api.web3forms.com/submit';
+                hiddenForm.method = 'POST';
+                hiddenForm.target = 'form-submission-frame';
                 
-                // Create a timeout to show success message after submission
+                // Copy all form data to hidden form
+                const formData = new FormData(contactForm);
+                for (const [key, value] of formData.entries()) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = key;
+                    input.value = value;
+                    hiddenForm.appendChild(input);
+                }
+                
+                // Append to body and submit
+                document.body.appendChild(hiddenForm);
+                hiddenForm.submit();
+                document.body.removeChild(hiddenForm);
+                
+                // Show success message after delay
                 setTimeout(() => {
                     clearAllMessages();
                     showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
@@ -458,14 +480,10 @@ function initializeWebsite() {
                         submitButton.disabled = false;
                         submitButton.textContent = originalText;
                     }, 3000);
-                }, 1500); // Show success after 1.5 seconds
+                }, 1500);
                 
-                // Allow the form to submit to iframe (don't prevent default)
-                return true;
             } else {
-                e.preventDefault();
                 showFormMessage('Please fill in all required fields correctly.', 'error');
-                return false;
             }
         });
     }
