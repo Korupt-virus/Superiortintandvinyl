@@ -26,8 +26,28 @@
 }
 
 .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
     font-size: 1.5rem;
     font-weight: var(--font-weight-bold);
+    text-decoration: none;
+}
+
+.nav-logo-img {
+    height: 40px;
+    width: auto;
+    filter: drop-shadow(0 0 5px rgba(212, 175, 55, 0.3));
+    display: block;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.nav-logo-img.loaded {
+    opacity: 1;
+}
+
+.nav-logo-text {
     background: var(--gold-text);
     background-clip: text;
     -webkit-background-clip: text;
@@ -133,6 +153,14 @@
     
     .nav-toggle {
         display: flex;
+    }
+    
+    .nav-logo-img {
+        height: 35px;
+    }
+    
+    .nav-logo-text {
+        font-size: 1.25rem;
     }
     
     .nav-toggle.active span:nth-child(1) {

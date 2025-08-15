@@ -4,6 +4,21 @@
  * Updated for modular component system
  */
 
+// Logo loading handlers
+function handleLogoLoading() {
+    const logos = document.querySelectorAll('.nav-logo-img, .hero-logo-img');
+    
+    logos.forEach(logo => {
+        if (logo.complete) {
+            logo.classList.add('loaded');
+        } else {
+            logo.addEventListener('load', () => {
+                logo.classList.add('loaded');
+            });
+        }
+    });
+}
+
 // Populate contact information from config
 function populateContactInfo() {
     if (typeof contactInfo === 'undefined') {
@@ -84,7 +99,10 @@ window.addEventListener('load', function() {
 });
 
 function initializeWebsite() {
-    // Populate contact information first
+    // Handle logo loading first
+    handleLogoLoading();
+    
+    // Populate contact information
     populateContactInfo();
     
     // ==========================================================================
