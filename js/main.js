@@ -415,9 +415,6 @@ function initializeWebsite() {
 
         // Form submission
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            e.stopPropagation(); // Prevent any bubbling
-            
             // Clear any existing messages first
             clearAllMessages();
             
@@ -431,98 +428,18 @@ function initializeWebsite() {
             });
             
             if (isValid) {
-                // Wait a moment to ensure messages are cleared
-                setTimeout(() => {
-                    submitFormToWeb3Forms(contactForm);
-                }, 50);
+                // Show loading message
+                showFormMessage('Sending your quote request...', 'info');
+                
+                // Allow the form to submit naturally to Web3Forms
+                // The form will handle the submission and redirect
+                return true;
             } else {
-                setTimeout(() => {
-                    showFormMessage('Please fill in all required fields correctly.', 'error');
-                }, 100);
+                e.preventDefault();
+                showFormMessage('Please fill in all required fields correctly.', 'error');
+                return false;
             }
         });
-    }
-
-    // Submit form to Web3Forms using proper AJAX approach
-    async function submitFormToWeb3Forms(form) {
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalButtonText = submitButton.textContent;
-        
-        // Prevent multiple submissions
-        if (submitButton.disabled) {
-            return;
-        }
-        
-        // Show loading state immediately
-        submitButton.textContent = 'Sending...';
-        submitButton.disabled = true;
-        
-        // Clear any existing messages and show loading message
-        clearAllMessages();
-        showFormMessage('Sending your quote request...', 'info');
-        
-        try {
-            // Create FormData object
-            const formData = new FormData(form);
-            
-            // Convert FormData to URLSearchParams for proper encoding
-            const params = new URLSearchParams();
-            for (const [key, value] of formData.entries()) {
-                params.append(key, value);
-            }
-            
-            const response = await fetch('https://api.web3forms.com/submit', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: params.toString()
-            });
-            
-            console.log('Response status:', response.status);
-            console.log('Response ok:', response.ok);
-            
-            // Check if response is successful (200-299)
-            if (response.ok) {
-                // Try to parse JSON, but don't fail if it's not JSON
-                let result = null;
-                try {
-                    const text = await response.text();
-                    console.log('Response text:', text);
-                    result = JSON.parse(text);
-                    console.log('Parsed result:', result);
-                } catch (parseError) {
-                    console.log('Could not parse JSON, but response was ok');
-                }
-                
-                // If we got a 200 response, consider it successful
-                clearAllMessages();
-                showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
-                
-                // Reset form after delay
-                setTimeout(() => {
-                    form.reset();
-                    // Clear any error states
-                    form.querySelectorAll('.error').forEach(field => {
-                        clearFieldError(field);
-                    });
-                }, 2000);
-                
-            } else {
-                throw new Error(`Server returned status ${response.status}`);
-            }
-            
-        } catch (error) {
-            console.error('Form submission error:', error);
-            clearAllMessages();
-            showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
-        } finally {
-            // Reset button state after a delay
-            setTimeout(() => {
-                submitButton.textContent = originalButtonText;
-                submitButton.disabled = false;
-            }, 2000);
-        }
     }
 
     // Helper function to clear all form messages
