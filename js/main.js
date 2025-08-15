@@ -467,9 +467,19 @@ function initializeWebsite() {
                 body: params.toString()
             });
             
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
             const result = await response.json();
             
             if (result.success) {
+                // Clear any existing messages before showing success
+                const existingMessage = form.querySelector('.form-message');
+                if (existingMessage) {
+                    existingMessage.remove();
+                }
+                
                 showFormMessage('Thank you! Your quote request has been sent successfully. We\'ll get back to you soon!', 'success');
                 
                 // Reset form after short delay
@@ -485,6 +495,11 @@ function initializeWebsite() {
             }
         } catch (error) {
             console.error('Form submission error:', error);
+            // Clear any existing messages before showing error
+            const existingMessage = form.querySelector('.form-message');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
             showFormMessage('Sorry, there was an error sending your message. Please try again or contact us directly.', 'error');
         } finally {
             // Reset button state after a delay to prevent rapid clicking
@@ -544,20 +559,21 @@ function initializeWebsite() {
 
     // Show form message
     function showFormMessage(message, type) {
-        let messageElement = contactForm.querySelector('.form-message');
-        
-        if (!messageElement) {
-            messageElement = document.createElement('div');
-            messageElement.className = 'form-message';
-            messageElement.style.padding = '1rem';
-            messageElement.style.borderRadius = '8px';
-            messageElement.style.marginTop = '1rem';
-            messageElement.style.fontWeight = '500';
-            contactForm.appendChild(messageElement);
+        // Clear any existing message first
+        const existingMessage = contactForm.querySelector('.form-message');
+        if (existingMessage) {
+            existingMessage.remove();
         }
         
-        messageElement.textContent = message;
+        let messageElement = document.createElement('div');
         messageElement.className = `form-message ${type}`;
+        messageElement.style.padding = '1rem';
+        messageElement.style.borderRadius = '8px';
+        messageElement.style.marginTop = '1rem';
+        messageElement.style.fontWeight = '500';
+        messageElement.style.transition = 'all 0.3s ease';
+        
+        messageElement.textContent = message;
         
         if (type === 'success') {
             messageElement.style.backgroundColor = 'rgba(72, 187, 120, 0.1)';
@@ -573,12 +589,22 @@ function initializeWebsite() {
             messageElement.style.border = '1px solid rgba(255, 107, 107, 0.3)';
         }
         
-        // Hide message after 5 seconds
-        setTimeout(() => {
-            if (messageElement.parentNode) {
-                messageElement.remove();
-            }
-        }, 5000);
+        contactForm.appendChild(messageElement);
+        
+        // Auto-hide message - longer for success, shorter for errors
+        const hideDelay = type === 'success' ? 4000 : (type === 'info' ? 0 : 5000); // Don't auto-hide info messages
+        if (hideDelay > 0) {
+            setTimeout(() => {
+                if (messageElement.parentNode) {
+                    messageElement.style.opacity = '0';
+                    setTimeout(() => {
+                        if (messageElement.parentNode) {
+                            messageElement.remove();
+                        }
+                    }, 300);
+                }
+            }, hideDelay);
+        }
     }
 
     // Email validation
